@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/sidhugithubaction/courserepo/compare/v1.0.0...v1.0.1) (2024-04-06)
+
+
+### Bug Fixes
+
+* Chnaged npm publish to false ([7ef6fa8](https://github.com/sidhugithubaction/courserepo/commit/7ef6fa8bb2c5e63d3b7338f5df9da028790bc6d6))
+
 # 1.0.0 (2024-04-06)
 
 
