@@ -25,3 +25,15 @@ jobs:
           ls ${{ github.workspace }}
       - run: |
           echo "This job status is : ${{ job.status }}"
+          echo "github"
+          echo "${{ toJson(github) }}"
+          echo "JOB"
+          echo "${{ toJson(job) }}"
+          echo "Runner"
+          echo "${{ toJson(runner) }}"
+          echo "Secrets"
+          echo "${{ toJson(secrets) }}"
+          echo "Vars"
+          echo "${{ toJson(vars) }}"
+          echo "Steps"
+          echo "${{ toJson(steps) }}"
