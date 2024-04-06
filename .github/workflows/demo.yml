@@ -49,6 +49,7 @@ jobs:
         with:
           node-version: 21
       - run: |
+          npm ci
           npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
