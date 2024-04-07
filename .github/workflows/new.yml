@@ -1,0 +1,27 @@
+name: sample
+run-name: tetsing envs ${{ github.actor }}
+on:
+  push:
+    branches: 
+      - main
+
+concurrency: 
+  group: testing-envs-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  buildjob:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          echo "Building"
+          sleep 1m
+
+  deploy_job:
+    runs-on: ubuntu-22.04
+    environment: production
+    steps:
+      - run: |
+          echo "Deploying"
+          sleep 1m
