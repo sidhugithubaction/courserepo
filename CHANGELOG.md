@@ -1,3 +1,19 @@
+# [1.1.0](https://github.com/sidhugithubaction/courserepo/compare/v1.0.1...v1.1.0) (2024-04-07)
+
+
+### Bug Fixes
+
+* added java wf ([ee81a21](https://github.com/sidhugithubaction/courserepo/commit/ee81a211f30481a636e33f97f05738d15f7e58f8))
+* new go wf ([e41bf2a](https://github.com/sidhugithubaction/courserepo/commit/e41bf2a72adc56117803e1a606a5cf53157d812c))
+* sdfgvewr ([278aead](https://github.com/sidhugithubaction/courserepo/commit/278aead1dfde193c8a2e7141b9c4e1e39fac61ff))
+
+
+### Features
+
+* new wf ([24cb7ad](https://github.com/sidhugithubaction/courserepo/commit/24cb7ad0a795a499b8dbfb60bbffc91aab140c9c))
+* sbidufvevc ([739a26f](https://github.com/sidhugithubaction/courserepo/commit/739a26f14d87a3ed878387aed28fd6a5bd9e2a38))
+* vdsvsvsdvsdv ([62b944d](https://github.com/sidhugithubaction/courserepo/commit/62b944d33dd617efd0d6fc16da2f5c9a0d05b223))
+
 ## [1.0.1](https://github.com/sidhugithubaction/courserepo/compare/v1.0.0...v1.0.1) (2024-04-06)
 
 
