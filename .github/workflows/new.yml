@@ -1,0 +1,26 @@
+name: workflow-manual
+run-name: triggering maually by ${{ github.actor }}
+
+on:
+  workflow_dispatch: 
+    inputs:
+      var1:
+        required: true
+        default: variable1
+        type: string
+      var2:
+        required: true
+        default: varaiable2
+        type: choice
+        options:
+          - new
+          - old
+
+
+jobs:
+  job1:
+    runs-on: ubuntu-22.04
+    steps:
+      - run: |
+          echo "$var1"
+          echo "$var2"
