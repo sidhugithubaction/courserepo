@@ -1,4 +1,4 @@
-name: workflow-manual
+name: workflow-manuall
 run-name: triggering maually by ${{ github.actor }}
 
 on:
