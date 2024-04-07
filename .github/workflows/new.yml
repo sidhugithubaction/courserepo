@@ -1,27 +1,26 @@
-name: sample
-run-name: tetsing envs ${{ github.actor }}
-on:
-  push:
-    branches: 
-      - main
+name: workflow-manual
+run-name: triggering maually by ${{ github.actor }}
 
-concurrency: 
-  group: testing-envs-${{ github.head_ref }}
-  cancel-in-progress: true
+on:
+  workflow_dispatch: 
+    inputs:
+      var1:
+        required: true
+        default: variable1
+        type: string
+      var2:
+        required: true
+        default: varaiable2
+        type: choice
+        options:
+          - new
+          - old
+
 
 jobs:
-  buildjob:
+  job1:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
       - run: |
-          echo "Building"
-          sleep 1m
-
-  deploy_job:
-    runs-on: ubuntu-22.04
-    environment: production
-    steps:
-      - run: |
-          echo "Deploying"
-          sleep 1m
+          echo "$var1"
+          echo "$var2"
