@@ -57,13 +57,14 @@ jobs:
     steps:
       - uses: docker/login-action@v3
         with:
-          registry: ${{ secrets.HARBOR_REGISTRY }}
-          username: ${{ secrets.HARBOR_USER }}
-          password: ${{ secrets.HARBOR_PASSWORD }}
+          # registry: ${{ secrets.HARBOR_REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
       - uses: docker/metadata-action@v5
         id: meta
         with:
-          images: ${{ secrets.HARBOR_REGISTRY }}/${{ secrets.HARBOR_PROJECT }}/courserepo
+          # images: ${{ secrets.HARBOR_REGISTRY }}/${{ secrets.HARBOR_PROJECT }}/courserepo
+          images: ${{ secrets.DOCKER_USERNAME }}/courserepo
           tags: $SHORT_SHA
       - uses: docker/build-push-action@v5
         with:
@@ -72,6 +73,32 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+  publish_to_ghcr:
+    runs-on: ubuntu-22.04
+    needs: 
+      - buildjob
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: docker/login-action@v3
+        with:
+          # registry: ${{ secrets.HARBOR_REGISTRY }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+      - uses: docker/metadata-action@v5
+        id: meta
+        with:
+          # images: ${{ secrets.HARBOR_REGISTRY }}/${{ secrets.HARBOR_PROJECT }}/courserepo
+          images: ghcr.io/${{ github.repository }}
+          tags: $SHORT_SHA
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
 
   deploy_job:
     runs-on: ubuntu-22.04
