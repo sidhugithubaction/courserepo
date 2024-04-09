@@ -37,7 +37,7 @@ jobs:
       - slack-first-msg
     steps:
       - run: |
-          echo "SHORT_SHA=`echo ${{ github.sha }} | cut -c1-8`" >> GITHUB_ENV
+          echo "SHORT_SHA=$(git rev-parse --short ${{ github.sha }})" >> GITHUB_ENV
   buildjob:
     runs-on: ubuntu-22.04
     needs: 
@@ -121,7 +121,7 @@ jobs:
     steps:
       - run: |
           curl -X POST \
-          'https://app.sleuth.io/api/1/deployments/sidhusaiprasanthorg/sidhusaiprasanthorg-app/register_deploy' \
+          'https://app.sleuth.io/api/1/deployments/sidhusaiprasanthorg/courserepo/register_deploy' \
             -H 'Authorization: Bearer ${{ secrets.SLEUTH_TOKEN }}' \
             -H 'Content-Type: application/json' \
             -d '{
