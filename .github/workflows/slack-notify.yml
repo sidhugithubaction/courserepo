@@ -37,7 +37,7 @@ jobs:
       - slack-first-msg
     steps:
       - run: |
-          SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7) >> GITHUB_ENV 
+          echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)" >> "GITHUB_ENV" 
   buildjob:
     runs-on: ubuntu-22.04
     needs: 
@@ -66,7 +66,8 @@ jobs:
         with:
           # images: ${{ secrets.HARBOR_REGISTRY }}/${{ secrets.HARBOR_PROJECT }}/courserepo
           images: ${{ secrets.DOCKER_USERNAME }}/courserepo
-          tags: ${{ env.SHORT_SHA }}
+          tags: |
+            type=raw,value=${{ env.SHORT_SHA }}
       - uses: docker/build-push-action@v5
         with:
           context: .
@@ -92,14 +93,14 @@ jobs:
         with:
           # images: ${{ secrets.HARBOR_REGISTRY }}/${{ secrets.HARBOR_PROJECT }}/courserepo
           images: ghcr.io/${{ github.repository }}
-          tags: ${{ env.SHORT_SHA }}
+          tags: |
+            type=raw,value=${{ env.SHORT_SHA }}
       - uses: docker/build-push-action@v5
-        with:
+        with:          
           context: .
           file: ./Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
   deploy_job:
     runs-on: ubuntu-22.04
     needs: 
