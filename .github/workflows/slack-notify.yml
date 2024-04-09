@@ -1,0 +1,67 @@
+name: Slack-notification-testing
+run-name: We are testing slack notifications, Triggered by @${{ github.actor }}
+on:
+  push:
+    branches:
+      - main
+
+concurrency: 
+  cancel-in-progress: true
+  group: slack-${{ github.workflow }}-${{ github.head_ref }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  slack-first-msg:
+    name: Slacknotification
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: rtCamp/action-slack-notify@v2.3.0
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: github-deployments
+          SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+          SLACK_ICON: https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png?size=48
+          SLACK_TITLE: We are Testing Slack notifications
+          SLACK_MESSAGE: 'Started: Workflow ${{ github.workflow }}, Runid: ${{ github.run_id }}, Run Number: ${{ github.run_number }}, RUNURL : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}, Triggerd by @${{ github.actor }}, Event: ${{ github.event_name }}, RunnerUsed: ${{ runner.os }}'
+          SLACK_USERNAME: githubbot
+          SLACK_MSG_AUTHOR: ${{ github.actor }}
+          SLACK_FOOTER: Powered by Github Slack Integration
+  buildjob:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          echo "Building"
+          sleep 1m
+
+  deploy_job:
+    runs-on: ubuntu-22.04
+    environment: production
+    steps:
+      - run: |
+          echo "Deploying"
+          sleep 1m
+  
+  slack-completed-msg:
+    name: Slacknotification
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: rtCamp/action-slack-notify@v2.3.0
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: github-deployments
+          SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+          SLACK_ICON: https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png?size=48
+          SLACK_TITLE: We are Testing Slack notifications
+          SLACK_MESSAGE: '${{ github.run_id }},${{ github.run_number }},RUNURL : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} - *${{ job.status }}:* '
+          SLACK_USERNAME: githubbot
+          SLACK_MSG_AUTHOR: ${{ github.actor }}
+          SLACK_FOOTER: Powered by Github Slack Integration
+
+        
+
