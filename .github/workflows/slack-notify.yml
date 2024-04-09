@@ -37,7 +37,7 @@ jobs:
       - slack-first-msg
     steps:
       - run: |
-          SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-8) >> GITHUB_ENV 
+          SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7) >> GITHUB_ENV 
   buildjob:
     runs-on: ubuntu-22.04
     needs: 
