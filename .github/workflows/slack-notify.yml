@@ -105,7 +105,6 @@ jobs:
     needs: 
       - buildjob
       - publish_to_docker
-    environment: production
     steps:
       - run: |
           echo "Deploying"
