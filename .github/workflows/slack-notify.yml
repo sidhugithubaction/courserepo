@@ -100,8 +100,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
-
   deploy_job:
     runs-on: ubuntu-22.04
     needs: 
@@ -112,6 +110,27 @@ jobs:
       - run: |
           echo "Deploying"
           sleep 1m
+  
+  register-dora-metrics:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-22.04
+    environment: development
+    needs: 
+      - publish_to_ghcr
+      - deploy_job
+    steps:
+      - run: |
+          curl -X POST \
+          'https://app.sleuth.io/api/1/deployments/sidhusaiprasanthorg/sidhusaiprasanthorg-app/register_deploy' \
+            -H 'Authorization: Bearer ${{ secrets.SLEUTH_TOKEN }}' \
+            -H 'Content-Type: application/json' \
+            -d '{
+            "sha": "${{ env.SHORT_SHA }}",
+            "environment": "${{ vars.ENVIRON }}"
+          }'
+
+
+  
   
   slack-completed-msg:
     name: Slacknotification-2
