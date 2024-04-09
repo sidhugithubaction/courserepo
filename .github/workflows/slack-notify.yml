@@ -30,13 +30,44 @@ jobs:
           SLACK_USERNAME: githubbot
           SLACK_MSG_AUTHOR: ${{ github.actor }}
           SLACK_FOOTER: Powered by Github Slack Integration
+  find_commit_short_sha:
+    runs-on: ubuntu-22.04
+    steps:
+      - run: |
+          echo "SHORT_SHA=`echo ${{ github.sha }} | cut -c1-8`" >> GITHUB_ENV
   buildjob:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
       - run: |
-          echo "Building"
-          sleep 1m
+          npm ci
+  publish_to_docker:
+    runs-on: ubuntu-22.04
+    if: github.ref_name == 'main'
+    steps:
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.HARBOR_REGISTRY }}
+          username: ${{ secrets.HARBOR_USER }}
+          password: ${{ secrets.HARBOR_PASSWORD }}
+      - uses: docker/metadata-action@v5
+        id: meta
+        with:
+          images: ${{ secrets.HARBOR_REGISTRY }}/${{ secrets.HARBOR_PROJECT }}/courserepo
+          tags: $SHORT_SHA
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+
+
 
   deploy_job:
     runs-on: ubuntu-22.04
@@ -48,6 +79,8 @@ jobs:
   
   slack-completed-msg:
     name: Slacknotification
+    needs: 
+      - slack-first-msg
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -62,6 +95,4 @@ jobs:
           SLACK_USERNAME: githubbot
           SLACK_MSG_AUTHOR: ${{ github.actor }}
           SLACK_FOOTER: Powered by Github Slack Integration
-
-        
 
