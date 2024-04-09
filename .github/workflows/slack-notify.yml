@@ -67,7 +67,7 @@ jobs:
           # images: ${{ secrets.HARBOR_REGISTRY }}/${{ secrets.HARBOR_PROJECT }}/courserepo
           images: ${{ secrets.DOCKER_USERNAME }}/courserepo
           tags: |
-            type=raw,value=${{ env.SHORT_SHA }}
+            type=sha
       - uses: docker/build-push-action@v5
         with:
           context: .
@@ -94,7 +94,7 @@ jobs:
           # images: ${{ secrets.HARBOR_REGISTRY }}/${{ secrets.HARBOR_PROJECT }}/courserepo
           images: ghcr.io/${{ github.repository }}
           tags: |
-            type=raw,value=${{ env.SHORT_SHA }}
+            type=sha
       - uses: docker/build-push-action@v5
         with:          
           context: .
