@@ -24,7 +24,7 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_CHANNEL: github-deployments
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
-          SLACK_ICON: https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png?size=48
+          SLACK_ICON: https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png
           SLACK_TITLE: We are Testing Slack notifications
           SLACK_MESSAGE: 'Started: Workflow ${{ github.workflow }}, Runid: ${{ github.run_id }}, Run Number: ${{ github.run_number }}, RUNURL : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}, Triggerd by @${{ github.actor }}, Event: ${{ github.event_name }}, RunnerUsed: ${{ runner.os }}'
           SLACK_USERNAME: githubbot
@@ -40,7 +40,7 @@ jobs:
 
   deploy_job:
     runs-on: ubuntu-22.04
-    environment: production
+    # environment: production
     steps:
       - run: |
           echo "Deploying"
@@ -48,6 +48,10 @@ jobs:
   
   slack-completed-msg:
     name: Slacknotification-result
+    needs:
+      - slack-first-msg
+      - buildjob
+      - deploy_job
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -56,9 +60,9 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_CHANNEL: github-deployments
           SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
-          SLACK_ICON: https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png?size=48
+          SLACK_ICON: https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png
           SLACK_TITLE: We are Testing Slack notifications
-          SLACK_MESSAGE: '${{ github.run_id }},${{ github.run_number }},RUNURL : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} - *${{ job.status }}:* '
+          SLACK_MESSAGE: 'RunId: ${{ github.run_id }}, RunNumber: ${{ github.run_number }},\nRUNURL : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} - *${{ job.status }}* '
           SLACK_USERNAME: githubbot
           SLACK_MSG_AUTHOR: ${{ github.actor }}
           SLACK_FOOTER: Powered by Github Slack Integration
