@@ -68,14 +68,13 @@ jobs:
           # images: ${{ secrets.HARBOR_REGISTRY }}/${{ secrets.HARBOR_PROJECT }}/courserepo
           images: ${{ secrets.DOCKER_USERNAME }}/courserepo
           tags: |
-            type=sha
+            $SHORT_SHA
       - uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
   publish_to_ghcr:
     runs-on: ubuntu-22.04
     needs: 
@@ -95,7 +94,7 @@ jobs:
           # images: ${{ secrets.HARBOR_REGISTRY }}/${{ secrets.HARBOR_PROJECT }}/courserepo
           images: ghcr.io/${{ github.repository }}
           tags: |
-            type=sha
+            $SHORT_SHA
       - uses: docker/build-push-action@v5
         with:          
           context: .
