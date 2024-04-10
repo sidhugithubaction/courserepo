@@ -235,7 +235,7 @@ jobs:
       issues: write
       pull-requests: write
     needs: 
-      - register-dora-metrics_production
+      - register-dora-metrics_staging
     steps:
       - uses: actions/checkout@v4
       - name: Release
