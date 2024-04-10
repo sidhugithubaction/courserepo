@@ -218,7 +218,9 @@ jobs:
   slack-completed-msg:
     name: Slacknotification-2
     needs: 
-      - slack-first-msg
+      - register-dora-metrics
+      - register-dora-metrics_staging
+    # if: ${{ always() }}
     if: ${{ always() }}
     runs-on: ubuntu-22.04
     steps:
