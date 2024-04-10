@@ -5,7 +5,7 @@ on:
     branches:
       - main
     tags:
-      - v*
+      - 'v*'
   workflow_dispatch:
   pull_request:
 
@@ -137,7 +137,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs: 
       - buildjob
-    if: github.ref_type == 'tag' && startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc')
+    if: startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc')
     steps:
       - uses: actions/checkout@v4
       - run: |
@@ -166,7 +166,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs: 
       - buildjob
-    if: github.ref_type == 'tag' && startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc')
+    if: startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc')
     steps:
       - uses: actions/checkout@v4
       - run: |
@@ -193,7 +193,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
 
   register-dora-metrics_staging:
-    if: github.ref_type == 'tag' && startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc')
+    if: startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc')
     runs-on: ubuntu-22.04
     environment:
       name: staging
