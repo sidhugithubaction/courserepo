@@ -198,8 +198,8 @@ jobs:
     environment:
       name: staging
     needs: 
-      - publish_to_ghcr
-      - deploy_job
+      - publish-docker-staging
+      - publish_to_ghcr_staging
     steps:
       - run: |
           echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c 1-7)" >> "$GITHUB_ENV" 
@@ -219,7 +219,7 @@ jobs:
     name: Slacknotification-2
     needs: 
       - slack-first-msg
-      - deploy_job
+    if: ${{ always() }}
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
