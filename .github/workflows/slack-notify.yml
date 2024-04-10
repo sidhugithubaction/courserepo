@@ -277,6 +277,19 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
 
+  deploy_to_prod:
+    runs-on: ubuntu-22.04
+    if: startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-rc')
+    environment:
+      name: production
+    needs:
+      - publish-docker-production
+      - publish_to_ghcr_production
+    steps:
+      - run: |
+          echo "Deploying to ${{ vars.ENVIRON }}"
+
+
   register-dora-metrics_production:
     if: startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-rc')
     runs-on: ubuntu-22.04
@@ -285,6 +298,7 @@ jobs:
     needs: 
       - publish-docker-production
       - publish_to_ghcr_production
+      - deploy_to_prod
     steps:
       - run: |
           echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c 1-7)" >> "$GITHUB_ENV" 
@@ -298,6 +312,23 @@ jobs:
             "sha": "${{ env.SHORT_SHA }}",
             "environment": "${{ vars.ENVIRON }}"
           }'
+
+  release_to_prod:
+    if: startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-rc')
+    runs-on: ubuntu-22.04
+    needs: 
+      - register-dora-metrics_production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            Dockerfile
+            harbordocs.md
+            package.json    
+
+  
 
 
 
