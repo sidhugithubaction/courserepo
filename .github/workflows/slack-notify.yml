@@ -192,6 +192,18 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
 
+  deploy_to_staging:
+    runs-on: ubuntu-22.04
+    if: startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc')
+    environment:
+      name: staging
+    needs:
+      - publish-docker-staging
+      - publish_to_ghcr_staging
+    steps:
+      - run: |
+          echo "Deploying to ${{ vars.ENVIRON }}"
+
   register-dora-metrics_staging:
     if: startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc')
     runs-on: ubuntu-22.04
@@ -200,6 +212,7 @@ jobs:
     needs: 
       - publish-docker-staging
       - publish_to_ghcr_staging
+      - deploy_to_staging
     steps:
       - run: |
           echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c 1-7)" >> "$GITHUB_ENV" 
@@ -213,7 +226,28 @@ jobs:
             "sha": "${{ env.SHORT_SHA }}",
             "environment": "${{ vars.ENVIRON }}"
           }'
-  
+
+  release_to_staging:
+    if: startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc')
+    runs-on: ubuntu-22.04
+    permissions: 
+      contents: write
+      issues: write
+      pull-requests: write
+    needs: 
+      - register-dora-metrics_production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            Dockerfile
+            harbordocs.md
+            package.json
+          token: ${{ secrets.GITHUB_TOKEN }}
+          generate_release_notes: true
+          prerelease: true
 
 
   # Production ###################
@@ -345,6 +379,7 @@ jobs:
       - register-dora-metrics
       - register-dora-metrics_staging
       - register-dora-metrics_production
+      - release_to_prod
     # if: ${{ always() }}
     if: ${{ always() }}
     runs-on: ubuntu-22.04
