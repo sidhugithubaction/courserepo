@@ -407,3 +407,18 @@ jobs:
           SLACK_MSG_AUTHOR: ${{ github.actor }}
           SLACK_FOOTER: Powered by Github Slack Integration
 
+  slack-custom:
+    name: Slack-custom
+    runs-on: ubuntu-22.04
+    if: ${{ always() }}
+    needs: 
+      - slack-completed-msg
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/deploy-slack-notification
+        with:
+            deployment_name: ${{ github.repository }}
+            slack_channels: 'C06TCB99PE0'
+            slack_bot_token: ${{ secrets.SLACK_BOT_TOKEN }}
+
+
