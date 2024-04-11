@@ -32,10 +32,11 @@ runs:
                 "type": "divider"
               },
               {
-                "type": "section",
+                "type": "header",
                 "text": {
-                  "type": "mrkdwn",
-                  "text": "*New Deployment for _${{ github.repository }}_ has been Triggered by :* *<https://github.com/${{ github.actor }}|${{ github.actor }}>*"
+                  "type": "plain_text",
+                  "text": "New Deployment for ${{ github.repository }} has been Triggered by : ${{ github.actor }}",
+                  "emoji": true
                 }
               },
               {
