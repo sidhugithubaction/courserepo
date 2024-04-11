@@ -420,7 +420,8 @@ jobs:
   slack-custom-success:
     name: Slack-custom-success
     runs-on: ubuntu-22.04
-    if: ${{ contains(needs.register-dora-metrics.result || needs.register-dora-metrics_staging.result || needs.register-dora-metrics_production.result || needs.release_to_prod.result, 'success') }}
+    if: ${{ always() }}
+    # if: ${{ contains(needs.register-dora-metrics.result || needs.register-dora-metrics_staging.result || needs.register-dora-metrics_production.result || needs.release_to_prod.result, 'success') }}
     needs: 
       - register-dora-metrics
       - register-dora-metrics_staging
@@ -434,21 +435,21 @@ jobs:
             slack_channels: 'C06TCB99PE0'
             slack_bot_token: ${{ secrets.SLACK_BOT_TOKEN }}
 
-  slack-custom-failure:
-    name: Slack-custom-failure
-    runs-on: ubuntu-22.04
-    if: ${{ !contains(needs.register-dora-metrics.result || needs.register-dora-metrics_staging.result || needs.register-dora-metrics_production.result || needs.release_to_prod.result, 'success') }}
-    needs: 
-      - register-dora-metrics
-      - register-dora-metrics_staging
-      - register-dora-metrics_production
-      - release_to_prod
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/deploy-slack-notification-failure
-        with:
-            deployment_name: ${{ github.repository }}
-            slack_channels: 'C06TCB99PE0'
-            slack_bot_token: ${{ secrets.SLACK_BOT_TOKEN }}
+  # slack-custom-failure:
+  #   name: Slack-custom-failure
+  #   runs-on: ubuntu-22.04
+  #   if: ${{ !contains(needs.register-dora-metrics.result || needs.register-dora-metrics_staging.result || needs.register-dora-metrics_production.result || needs.release_to_prod.result, 'success') }}
+  #   needs: 
+  #     - register-dora-metrics
+  #     - register-dora-metrics_staging
+  #     - register-dora-metrics_production
+  #     - release_to_prod
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: ./.github/actions/deploy-slack-notification-failure
+  #       with:
+  #           deployment_name: ${{ github.repository }}
+  #           slack_channels: 'C06TCB99PE0'
+  #           slack_bot_token: ${{ secrets.SLACK_BOT_TOKEN }}
 
 
