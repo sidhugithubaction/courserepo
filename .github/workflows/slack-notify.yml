@@ -53,9 +53,11 @@ jobs:
       - buildjob
     if: github.ref == 'refs/heads/main'
     steps:
-      - uses: sidhugithubaction/sidhu-commonactions-workflows/customactions/to-publish-to-docker@v1.0.0
+      - uses: sidhugithubaction/sidhu-commonactions-workflows/customactions/to-publish-to-docker@v1.0.1
         with:
           image_name: courserepo
+          docker_username: ${{ secrets.DOCKER_USERNAME }}
+          docker_password: ${{ secrets.DOCKER_PASSWORD }}
       # - uses: actions/checkout@v4
       # - run: |
       #     echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c 1-7)" >> "$GITHUB_ENV" 
@@ -84,7 +86,9 @@ jobs:
       - buildjob
     if: github.ref == 'refs/heads/main'
     steps:
-      - uses: sidhugithubaction/sidhu-commonactions-workflows/customactions/to-publish-to-ghcr@v1.0.0
+      - uses: sidhugithubaction/sidhu-commonactions-workflows/customactions/to-publish-to-ghcr@v1.0.1
+        with:
+          ghcr_password: ${{ secrets.GHCR_TOKEN }}
       # - uses: actions/checkout@v4
       # - run: |
       #     echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c 1-7)" >> "$GITHUB_ENV" 
