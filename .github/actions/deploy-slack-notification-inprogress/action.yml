@@ -1,5 +1,5 @@
-name: send-slack-notification
-description: Sends a notification to slack on deployment
+name: send-slack-notification-inprogress
+description: Sends a notification to slack on deployment in progress
 
 inputs:
   deployment_name:
@@ -79,7 +79,7 @@ runs:
                 "type": "header",
                 "text": {
                   "type": "plain_text",
-                  "text": "Deployment Status :  Success",
+                  "text": "Deployment Status :  In Progress",
                   "emoji": true
                 }
               }

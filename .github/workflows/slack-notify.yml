@@ -20,26 +20,36 @@ defaults:
     shell: bash
 
 jobs:
-  slack-first-msg:
-    name: Slacknotification
+  slack-custom-success-inprogress:
+    name: Slack-custom-success-inprogress
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - uses: rtCamp/action-slack-notify@v2.3.0
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_CHANNEL: github-deployments
-          SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
-          SLACK_ICON: https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png?size=48
-          SLACK_TITLE: We are Testing Slack notifications
-          SLACK_MESSAGE: 'Started: Workflow ${{ github.workflow }}, Runid: ${{ github.run_id }}, Run Number: ${{ github.run_number }}, RUNURL : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}, Triggerd by @${{ github.actor }}, Event: ${{ github.event_name }}, RunnerUsed: ${{ runner.os }}'
-          SLACK_USERNAME: githubbot
-          SLACK_MSG_AUTHOR: ${{ github.actor }}
-          SLACK_FOOTER: Powered by Github Slack Integration
+      - uses: ./.github/actions/deploy-slack-notification-inprogress
+        with:
+            deployment_name: ${{ github.repository }}
+            slack_channels: 'C06TCB99PE0'
+            slack_bot_token: ${{ secrets.SLACK_BOT_TOKEN }}
+  # slack-first-msg:
+  #   name: Slacknotification
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: rtCamp/action-slack-notify@v2.3.0
+  #       env:
+  #         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+  #         SLACK_CHANNEL: github-deployments
+  #         SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+  #         SLACK_ICON: https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png?size=48
+  #         SLACK_TITLE: We are Testing Slack notifications
+  #         SLACK_MESSAGE: 'Started: Workflow ${{ github.workflow }}, Runid: ${{ github.run_id }}, Run Number: ${{ github.run_number }}, RUNURL : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}, Triggerd by @${{ github.actor }}, Event: ${{ github.event_name }}, RunnerUsed: ${{ runner.os }}'
+  #         SLACK_USERNAME: githubbot
+  #         SLACK_MSG_AUTHOR: ${{ github.actor }}
+  #         SLACK_FOOTER: Powered by Github Slack Integration
   buildjob:
     runs-on: ubuntu-22.04
     needs: 
-      - slack-first-msg
+      - slack-custom-success-inprogress
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -383,39 +393,59 @@ jobs:
 
   ########################
   
-  slack-completed-msg:
-    name: Slacknotification-2
+  # slack-completed-msg:
+  #   name: Slacknotification-2
+  #   needs: 
+  #     - register-dora-metrics
+  #     - register-dora-metrics_staging
+  #     - register-dora-metrics_production
+  #     - release_to_prod
+  #   # if: ${{ always() }}
+  #   if: ${{ always() }}
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: rtCamp/action-slack-notify@v2.3.0
+  #       env:
+  #         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+  #         SLACK_CHANNEL: github-deployments
+  #         SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+  #         SLACK_ICON: https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png?size=48
+  #         SLACK_TITLE: We are Testing Slack notifications
+  #         SLACK_MESSAGE: '${{ github.run_id }},${{ github.run_number }},RUNURL : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} - *${{ job.status }}:* '
+  #         SLACK_USERNAME: githubbot
+  #         SLACK_MSG_AUTHOR: ${{ github.actor }}
+  #         SLACK_FOOTER: Powered by Github Slack Integration
+
+  slack-custom-success:
+    name: Slack-custom-success
+    runs-on: ubuntu-22.04
+    if: ${{ contains(needs.*.result, 'success') }}
     needs: 
       - register-dora-metrics
       - register-dora-metrics_staging
       - register-dora-metrics_production
       - release_to_prod
-    # if: ${{ always() }}
-    if: ${{ always() }}
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: rtCamp/action-slack-notify@v2.3.0
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_CHANNEL: github-deployments
-          SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
-          SLACK_ICON: https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png?size=48
-          SLACK_TITLE: We are Testing Slack notifications
-          SLACK_MESSAGE: '${{ github.run_id }},${{ github.run_number }},RUNURL : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} - *${{ job.status }}:* '
-          SLACK_USERNAME: githubbot
-          SLACK_MSG_AUTHOR: ${{ github.actor }}
-          SLACK_FOOTER: Powered by Github Slack Integration
-
-  slack-custom:
-    name: Slack-custom
-    runs-on: ubuntu-22.04
-    if: ${{ always() }}
-    needs: 
-      - slack-completed-msg
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/deploy-slack-notification
+        with:
+            deployment_name: ${{ github.repository }}
+            slack_channels: 'C06TCB99PE0'
+            slack_bot_token: ${{ secrets.SLACK_BOT_TOKEN }}
+
+  slack-custom-failure:
+    name: Slack-custom-failure
+    runs-on: ubuntu-22.04
+    if: ${{ contains(needs.*.result, 'failure') }}
+    needs: 
+      - register-dora-metrics
+      - register-dora-metrics_staging
+      - register-dora-metrics_production
+      - release_to_prod
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/deploy-slack-notification-failure
         with:
             deployment_name: ${{ github.repository }}
             slack_channels: 'C06TCB99PE0'
