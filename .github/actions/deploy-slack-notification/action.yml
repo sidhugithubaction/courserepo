@@ -27,27 +27,15 @@ runs:
         channel-id: "${{ inputs.slack_channels }}"
         payload: |
           {
-            "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
             "blocks": [
               {
-                "type": "section",
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "${{ inputs.deployment_name }} was deployed"
-                }
+                "type": "divider"
               },
               {
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
-                }
-              },
-              {
-                "type": "section",
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "<${{ env.GH_COMMIT_URL || github.event.head_commit.url }}|${{ env.GH_MESSAGE }}>"
+                  "text": "*Hey, New Deployment for _${{ github.repository }}_ has been Triggered by :*\n*<https://github.com/${{ github.actor }}|${{ github.actor }}>*"
                 }
               },
               {
@@ -55,11 +43,35 @@ runs:
                 "fields": [
                   {
                     "type": "mrkdwn",
-                    "text": "*By:*\n${{ github.actor || 'N/A' }}"
+                    "text": "*Event Type:* _${{ github.event_name }}_"
                   },
                   {
                     "type": "mrkdwn",
-                    "text": "*Author:*\n${{ env.GH_COMMIT_AUTHOR || github.event.head_commit.author.username || 'N/A' }}"
+                    "text": "*Commit Url:* _<${{ env.GH_COMMIT_URL || github.event.head_commit.url }}|${{ env.GH_MESSAGE }}>_"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Commit Author:* _${{ env.GH_COMMIT_AUTHOR || github.event.head_commit.author.username || 'N/A' }}_"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Branch/Tag:* _${{ github.ref_name }}_"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Git Repo URL:* _${{ github.repositoryUrl }}_"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Workflow Run number:* _${{ github.run_number }}_"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Workflow Run Attempt:* _${{ github.run_attempt }}_"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*COMMIT SHA:* _${{ github.sha }}_"
                   }
                 ]
               }
