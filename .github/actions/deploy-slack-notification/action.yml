@@ -18,7 +18,7 @@ runs:
     - name: Prepare Message
       run: |
         echo "GH_MESSAGE=$(git rev-list HEAD -n 1 --oneline)" >> $GITHUB_ENV
-        echo "GH_COMMIT_URL=https://github.com/volvo-cars/urax/commit/$GITHUB_SHA" >> $GITHUB_ENV
+        echo "GH_COMMIT_URL=https://github.com/${{ github.repository }}/commit/$GITHUB_SHA" >> $GITHUB_ENV
         echo "GH_COMMIT_AUTHOR=$(git rev-list HEAD -n 1 --pretty=format:'%aN' | tail -n 1)" >> $GITHUB_ENV
       shell: bash
     - name: Send slack notification
@@ -59,7 +59,7 @@ runs:
                   },
                   {
                     "type": "mrkdwn",
-                    "text": "*Git Repo URL:* _${{ github.repositoryUrl }}_"
+                    "text": "*Git Repo URL:* *${{ github.repositoryUrl }}*"
                   },
                   {
                     "type": "mrkdwn",
