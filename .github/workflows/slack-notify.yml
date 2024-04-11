@@ -420,7 +420,7 @@ jobs:
   slack-custom-success:
     name: Slack-custom-success
     runs-on: ubuntu-22.04
-    if: ${{ contains(needs.*.result, 'success') }}
+    if: ${{ contains(needs.register-dora-metrics.result || needs.register-dora-metrics_staging.result || needs.register-dora-metrics_production.result || needs.release_to_prod.result, 'success') }}
     needs: 
       - register-dora-metrics
       - register-dora-metrics_staging
@@ -437,7 +437,7 @@ jobs:
   slack-custom-failure:
     name: Slack-custom-failure
     runs-on: ubuntu-22.04
-    if: ${{ contains(needs.*.result, 'failure') }}
+    if: ${{ !contains(needs.register-dora-metrics.result || needs.register-dora-metrics_staging.result || needs.register-dora-metrics_production.result || needs.release_to_prod.result, 'success') }}
     needs: 
       - register-dora-metrics
       - register-dora-metrics_staging

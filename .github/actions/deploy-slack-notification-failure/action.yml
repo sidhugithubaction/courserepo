@@ -59,7 +59,7 @@ runs:
                   },
                   {
                     "type": "mrkdwn",
-                    "text": "*Git Repo URL:* _${{ github.repositoryUrl }}_"
+                    "text": "*Git Repo URL:* ${{ github.repositoryUrl }}"
                   },
                   {
                     "type": "mrkdwn",
