@@ -63,7 +63,7 @@ jobs:
       - buildjob
     if: github.ref == 'refs/heads/main'
     steps:
-      - uses: sidhugithubaction/sidhu-commonactions-workflows/customactions/to-publish-to-docker@v1.0.2
+      - uses: sidhugithubaction/sidhu-commonactions-workflows/customactions/to-publish-to-docker@v1.0.3
         with:
           image_name: courserepo
           docker_username: ${{ secrets.DOCKER_USERNAME }}
@@ -159,7 +159,7 @@ jobs:
       - buildjob
     if: ${{ startsWith(github.ref, 'refs/tags/v') && contains(github.ref, '-rc') }}
     steps:
-      - uses: sidhugithubaction/sidhu-commonactions-workflows/customactions/to-publish-to-docker@v1.0.2
+      - uses: sidhugithubaction/sidhu-commonactions-workflows/customactions/to-publish-to-docker@v1.0.3
         with:
           image_name: courserepo
           docker_username: ${{ secrets.DOCKER_USERNAME }}
