@@ -50,8 +50,8 @@ jobs:
       - uses: sidhugithubaction/sidhu-commonactions-workflows/customactions/to-publish-to-docker@v1.0.3
         with:
           image_name: courserepo
-          docker_username: ${{ secrets.DOCKER_USERNAME }}
-          docker_password: ${{ secrets.DOCKER_PASSWORD }}
+          # docker_username: ${{ secrets.DOCKER_USERNAME }}
+          # docker_password: ${{ secrets.DOCKER_PASSWORD }}
   publish_to_ghcr:
     runs-on: ubuntu-22.04
     needs: 
