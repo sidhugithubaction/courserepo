@@ -50,8 +50,8 @@ jobs:
       - uses: sidhugithubaction/sidhu-commonactions-workflows/customactions/to-publish-to-docker@v1.0.3
         with:
           image_name: courserepo
-          docker_username: ${{ secrets.DOCKER_USERNAME }}
-          docker_password: ${{ secrets.DOCKER_PASSWORD }}
+          # docker_username: ${{ secrets.DOCKER_USERNAME }}
+          # docker_password: ${{ secrets.DOCKER_PASSWORD }}
   publish_to_ghcr:
     runs-on: ubuntu-22.04
     needs: 
@@ -253,7 +253,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}   
 
   notify-slack-custom-success:
-    name: Slack-custom-notify
+    name: Slack-custom-notify-ON-SUCCESS
     runs-on: ubuntu-22.04
     if: success() || !failure()
     needs:
@@ -284,7 +284,7 @@ jobs:
             slack_bot_token: ${{ secrets.SLACK_BOT_TOKEN }}
 
   notify-slack-custom-failure:
-    name: Slack-custom-notify
+    name: Slack-custom-notify-ON-FAILURE
     runs-on: ubuntu-22.04
     if: failure()
     needs:
