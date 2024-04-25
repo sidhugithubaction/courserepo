@@ -20,8 +20,8 @@ defaults:
     shell: bash
 
 jobs:
-  slack-custom-success-inprogress:
-    name: Slack-custom-success-inprogress
+  slack-custom-inprogress:
+    name: Slack-custom-inprogress
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -30,22 +30,6 @@ jobs:
             deployment_name: ${{ github.repository }}
             slack_channels: 'C06TCB99PE0'
             slack_bot_token: ${{ secrets.SLACK_BOT_TOKEN }}
-  # slack-first-msg:
-  #   name: Slacknotification
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: rtCamp/action-slack-notify@v2.3.0
-  #       env:
-  #         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-  #         SLACK_CHANNEL: github-deployments
-  #         SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
-  #         SLACK_ICON: https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png?size=48
-  #         SLACK_TITLE: We are Testing Slack notifications
-  #         SLACK_MESSAGE: 'Started: Workflow ${{ github.workflow }}, Runid: ${{ github.run_id }}, Run Number: ${{ github.run_number }}, RUNURL : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}, Triggerd by @${{ github.actor }}, Event: ${{ github.event_name }}, RunnerUsed: ${{ runner.os }}'
-  #         SLACK_USERNAME: githubbot
-  #         SLACK_MSG_AUTHOR: ${{ github.actor }}
-  #         SLACK_FOOTER: Powered by Github Slack Integration
   buildjob:
     runs-on: ubuntu-22.04
     needs: 
@@ -68,28 +52,6 @@ jobs:
           image_name: courserepo
           docker_username: ${{ secrets.DOCKER_USERNAME }}
           docker_password: ${{ secrets.DOCKER_PASSWORD }}
-      # - uses: actions/checkout@v4
-      # - run: |
-      #     echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c 1-7)" >> "$GITHUB_ENV" 
-      #     echo $SHORT_SHA
-      # - uses: docker/login-action@v3
-      #   with:
-      #     # registry: ${{ secrets.HARBOR_REGISTRY }}
-      #     username: ${{ secrets.DOCKER_USERNAME }}
-      #     password: ${{ secrets.DOCKER_PASSWORD }}
-      # - uses: docker/metadata-action@v5
-      #   id: meta
-      #   with:
-      #     # images: ${{ secrets.HARBOR_REGISTRY }}/${{ secrets.HARBOR_PROJECT }}/courserepo
-      #     images: ${{ secrets.DOCKER_USERNAME }}/courserepo
-      #     tags: |
-      #       ${{ env.SHORT_SHA }}
-      # - uses: docker/build-push-action@v5
-      #   with:
-      #     context: .
-      #     file: ./Dockerfile
-      #     push: true
-      #     tags: ${{ steps.meta.outputs.tags }}
   publish_to_ghcr:
     runs-on: ubuntu-22.04
     needs: 
@@ -99,29 +61,6 @@ jobs:
       - uses: sidhugithubaction/sidhu-commonactions-workflows/customactions/to-publish-to-ghcr@v1.0.1
         with:
           ghcr_password: ${{ secrets.GHCR_TOKEN }}
-      # - uses: actions/checkout@v4
-      # - run: |
-      #     echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c 1-7)" >> "$GITHUB_ENV" 
-      #     echo $SHORT_SHA
-      # - uses: docker/login-action@v3
-      #   with:
-      #     # registry: ${{ secrets.HARBOR_REGISTRY }}
-      #     registry: ghcr.io
-      #     username: ${{ github.actor }}
-      #     password: ${{ secrets.GHCR_TOKEN }}
-      # - uses: docker/metadata-action@v5
-      #   id: meta
-      #   with:
-      #     # images: ${{ secrets.HARBOR_REGISTRY }}/${{ secrets.HARBOR_PROJECT }}/courserepo
-      #     images: ghcr.io/${{ github.repository }}
-      #     tags: |
-      #       ${{ env.SHORT_SHA }}
-      # - uses: docker/build-push-action@v5
-      #   with:          
-      #     context: .
-      #     file: ./Dockerfile
-      #     push: true
-      #     tags: ${{ steps.meta.outputs.tags }}
   deploy_job:
     runs-on: ubuntu-22.04
     needs: 
@@ -164,29 +103,6 @@ jobs:
           image_name: courserepo
           docker_username: ${{ secrets.DOCKER_USERNAME }}
           docker_password: ${{ secrets.DOCKER_PASSWORD }}
-      
-      # - uses: actions/checkout@v4
-      # - run: |
-      #     echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c 1-7)" >> "$GITHUB_ENV" 
-      #     echo $SHORT_SHA
-      # - uses: docker/login-action@v3
-      #   with:
-      #     # registry: ${{ secrets.HARBOR_REGISTRY }}
-      #     username: ${{ secrets.DOCKER_USERNAME }}
-      #     password: ${{ secrets.DOCKER_PASSWORD }}
-      # - uses: docker/metadata-action@v5
-      #   id: meta
-      #   with:
-      #     # images: ${{ secrets.HARBOR_REGISTRY }}/${{ secrets.HARBOR_PROJECT }}/courserepo
-      #     images: ${{ secrets.DOCKER_USERNAME }}/courserepo
-      #     tags: |
-      #       ${{ env.SHORT_SHA }}
-      # - uses: docker/build-push-action@v5
-      #   with:
-      #     context: .
-      #     file: ./Dockerfile
-      #     push: true
-      #     tags: ${{ steps.meta.outputs.tags }}
 
   publish_to_ghcr_staging:
     runs-on: ubuntu-22.04
@@ -200,14 +116,12 @@ jobs:
           echo $SHORT_SHA
       - uses: docker/login-action@v3
         with:
-          # registry: ${{ secrets.HARBOR_REGISTRY }}
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
       - uses: docker/metadata-action@v5
         id: meta
         with:
-          # images: ${{ secrets.HARBOR_REGISTRY }}/${{ secrets.HARBOR_PROJECT }}/courserepo
           images: ghcr.io/${{ github.repository }}
           tags: |
             ${{ env.SHORT_SHA }}
@@ -393,69 +307,41 @@ jobs:
             package.json
           token: ${{ secrets.GITHUB_TOKEN }}   
 
-  
-
-
-
-  ########################
-  
-  # slack-completed-msg:
-  #   name: Slacknotification-2
-  #   needs: 
-  #     - register-dora-metrics
-  #     - register-dora-metrics_staging
-  #     - register-dora-metrics_production
-  #     - release_to_prod
-  #   # if: ${{ always() }}
-  #   if: ${{ always() }}
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: rtCamp/action-slack-notify@v2.3.0
-  #       env:
-  #         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-  #         SLACK_CHANNEL: github-deployments
-  #         SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
-  #         SLACK_ICON: https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png?size=48
-  #         SLACK_TITLE: We are Testing Slack notifications
-  #         SLACK_MESSAGE: '${{ github.run_id }},${{ github.run_number }},RUNURL : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} - *${{ job.status }}:* '
-  #         SLACK_USERNAME: githubbot
-  #         SLACK_MSG_AUTHOR: ${{ github.actor }}
-  #         SLACK_FOOTER: Powered by Github Slack Integration
-
-  slack-custom-success:
-    name: Slack-custom-success
+  notify-slack-custom:
+    name: Slack-custom-notify
     runs-on: ubuntu-22.04
-    if: ${{ always() }}
-    # if: ${{ contains(needs.register-dora-metrics.result || needs.register-dora-metrics_staging.result || needs.register-dora-metrics_production.result || needs.release_to_prod.result, 'success') }}
-    needs: 
+    needs:
+      - slack-custom-inprogress
+      - buildjob
+      - publish_to_docker
+      - publish_to_ghcr
+      - deploy_job
       - register-dora-metrics
+      - publish-docker-staging
+      - publish_to_ghcr_staging
+      - deploy_to_staging
       - register-dora-metrics_staging
+      - release_to_staging
+      - publish-docker-production
+      - publish_to_ghcr_production
+      - deploy_to_prod
       - register-dora-metrics_production
       - release_to_prod
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/deploy-slack-notification
+      - name: Send notification on job success
+        if: success()
+        uses: ./.github/actions/deploy-slack-notification-success
         with:
             deployment_name: ${{ github.repository }}
             slack_channels: 'C06TCB99PE0'
             slack_bot_token: ${{ secrets.SLACK_BOT_TOKEN }}
-
-  # slack-custom-failure:
-  #   name: Slack-custom-failure
-  #   runs-on: ubuntu-22.04
-  #   if: ${{ !contains(needs.register-dora-metrics.result || needs.register-dora-metrics_staging.result || needs.register-dora-metrics_production.result || needs.release_to_prod.result, 'success') }}
-  #   needs: 
-  #     - register-dora-metrics
-  #     - register-dora-metrics_staging
-  #     - register-dora-metrics_production
-  #     - release_to_prod
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: ./.github/actions/deploy-slack-notification-failure
-  #       with:
-  #           deployment_name: ${{ github.repository }}
-  #           slack_channels: 'C06TCB99PE0'
-  #           slack_bot_token: ${{ secrets.SLACK_BOT_TOKEN }}
+      - name: Send notification on Job Failure
+        if: failure()
+        uses: ./.github/actions/deploy-slack-notification-failure
+        with:
+          deployment_name: ${{ github.repository }}
+          slack_channels: 'C06TCB99PE0'
+          slack_bot_token: ${{ secrets.SLACK_BOT_TOKEN }}
 
 
