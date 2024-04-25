@@ -310,6 +310,7 @@ jobs:
   notify-slack-custom:
     name: Slack-custom-notify
     runs-on: ubuntu-22.04
+    if: always()
     needs:
       - slack-custom-inprogress
       - buildjob
