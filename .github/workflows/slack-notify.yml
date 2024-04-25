@@ -33,7 +33,7 @@ jobs:
   buildjob:
     runs-on: ubuntu-22.04
     needs: 
-      - slack-custom-success-inprogress
+      - slack-custom-inprogress
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
