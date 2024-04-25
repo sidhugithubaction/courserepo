@@ -307,10 +307,10 @@ jobs:
             package.json
           token: ${{ secrets.GITHUB_TOKEN }}   
 
-  notify-slack-custom:
+  notify-slack-custom-success:
     name: Slack-custom-notify
     runs-on: ubuntu-22.04
-    if: always()
+    if: success()
     needs:
       - slack-custom-inprogress
       - buildjob
@@ -331,18 +331,40 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Send notification on job success
-        if: success()
+        # if: success()
         uses: ./.github/actions/deploy-slack-notification-success
         with:
             deployment_name: ${{ github.repository }}
             slack_channels: 'C06TCB99PE0'
             slack_bot_token: ${{ secrets.SLACK_BOT_TOKEN }}
+
+  notify-slack-custom-failure:
+    name: Slack-custom-notify
+    runs-on: ubuntu-22.04
+    if: failure() || !success()
+    needs:
+      - slack-custom-inprogress
+      - buildjob
+      - publish_to_docker
+      - publish_to_ghcr
+      - deploy_job
+      - register-dora-metrics
+      - publish-docker-staging
+      - publish_to_ghcr_staging
+      - deploy_to_staging
+      - register-dora-metrics_staging
+      - release_to_staging
+      - publish-docker-production
+      - publish_to_ghcr_production
+      - deploy_to_prod
+      - register-dora-metrics_production
+      - release_to_prod
+    steps:
+      - uses: actions/checkout@v4
       - name: Send notification on Job Failure
-        if: failure()
+        # if: failure()
         uses: ./.github/actions/deploy-slack-notification-failure
         with:
           deployment_name: ${{ github.repository }}
           slack_channels: 'C06TCB99PE0'
           slack_bot_token: ${{ secrets.SLACK_BOT_TOKEN }}
-
-
