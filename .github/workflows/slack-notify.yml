@@ -286,7 +286,7 @@ jobs:
   notify-slack-custom-failure:
     name: Slack-custom-notify
     runs-on: ubuntu-22.04
-    if: failure() || !success()
+    if: failure()
     needs:
       - slack-custom-inprogress
       - buildjob
